@@ -7,6 +7,10 @@
   "files": [
     "/dist"
   ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/andreinwald/uri-js-replace.git"
+  },
   "scripts": {
     "test": "vitest"
   },
@@ -16,5 +20,6 @@
     "vitest": "^1.2.2"
   },
   "author": "https://github.com/andreinwald",
-  "license": "MIT"
+  "license": "MIT",
+  "homepage": "https://github.com/andreinwald/uri-js-replace"
 }
