@@ -1,18 +1,18 @@
 import * as URI from '../src'
 import {expect, test} from 'vitest'
+import {URL} from "node:url";
 
 function strictEqual(received, expected, comment) {
     expect(received, comment).toStrictEqual(expected);
 }
 
 test("URI Parsing", function () {
-    var components;
+    let components;
 
     //all
     components = URI.parse("uri://user:pass@example.com:123/one/two.three?q1=a1&q2=a2#body");
     strictEqual(components.error, undefined, "all errors");
     strictEqual(components.scheme, "uri", "scheme");
-    //strictEqual(components.authority, "user:pass@example.com:123", "authority");
     strictEqual(components.userinfo, "user:pass", "userinfo");
     strictEqual(components.host, "example.com", "host");
     strictEqual(components.port, 123, "port");
@@ -20,19 +20,32 @@ test("URI Parsing", function () {
     strictEqual(components.query, "q1=a1&q2=a2", "query");
     strictEqual(components.fragment, "body", "fragment");
 
-    return;
-    // TODO
 
     //IPv4address
-    components = URI.parse("//10.10.10.10");
+    components = URI.parse("http://10.10.10.10");
     strictEqual(components.error, undefined, "IPv4address errors");
-    strictEqual(components.scheme, undefined, "scheme");
+    strictEqual(components.scheme, 'http', "scheme");
     strictEqual(components.userinfo, undefined, "userinfo");
     strictEqual(components.host, "10.10.10.10", "host");
     strictEqual(components.port, undefined, "port");
     strictEqual(components.path, "", "path");
     strictEqual(components.query, undefined, "query");
     strictEqual(components.fragment, undefined, "fragment");
+
+    //IPv6address
+    components = URI.parse("//[2001:db8::7]");
+    strictEqual(components.error, undefined, "IPv4address errors");
+    strictEqual(components.scheme, undefined, "scheme");
+    strictEqual(components.userinfo, undefined, "userinfo");
+    strictEqual(components.host, "2001:db8::7", "host");
+    strictEqual(components.port, undefined, "port");
+    strictEqual(components.path, "", "path");
+    strictEqual(components.query, undefined, "query");
+    strictEqual(components.fragment, undefined, "fragment");
+
+
+    return;
+    // TODO
 
     //scheme
     components = URI.parse("uri:");
@@ -190,16 +203,6 @@ test("URI Parsing", function () {
     strictEqual(components.query, undefined, "query");
     strictEqual(components.fragment, undefined, "fragment");
 
-    //IPv6address
-    components = URI.parse("//[2001:db8::7]");
-    strictEqual(components.error, undefined, "IPv4address errors");
-    strictEqual(components.scheme, undefined, "scheme");
-    strictEqual(components.userinfo, undefined, "userinfo");
-    strictEqual(components.host, "2001:db8::7", "host");
-    strictEqual(components.port, undefined, "port");
-    strictEqual(components.path, "", "path");
-    strictEqual(components.query, undefined, "query");
-    strictEqual(components.fragment, undefined, "fragment");
 
     //mixed IPv4address & IPv6address
     components = URI.parse("//[::ffff:129.144.52.38]");

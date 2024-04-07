@@ -2,25 +2,67 @@ import {URL} from "node:url";
 
 export function parse(uriString: string, options: URIOptions = {}): URIComponents {
     let parsed;
+    let addedDefaultScheme = false;
     try {
         parsed = new URL(uriString);
-    } catch (error) {
-        console.log(uriString);
-        throw error;
+    } catch (firstError) {
+        firstError.message = firstError.message + ' ' + uriString;
+        if (uriString.startsWith('//')) {
+            try {
+                parsed = new URL('http:' + uriString);
+                addedDefaultScheme = true;
+            } catch (otherError) {
+                throw firstError;
+            }
+        } else {
+            throw firstError;
+        }
     }
-    return {
-        scheme: String(parsed.protocol).replace(':', ''),
-        userinfo: parsed.username ? parsed.username + ':' + parsed.password : undefined,
-        host: parsed.hostname && parsed.hostname.length ? parsed.hostname : undefined,
-        port: parsed.port ? Number(parsed.port) : undefined,
-        path: parsed.pathname,
-        query: parsed.search ? parsed.search.replace('?', '') : undefined,
-        fragment: parsed.hash ? parsed.hash.replace('#', '') : undefined,
+    let result: URIComponents = {
+        path: '',
     };
+    if (typeof parsed.protocol !== undefined && parsed.protocol !== '' && !addedDefaultScheme) {
+        result.scheme = String(parsed.protocol).replace(':', '');
+    }
+
+    if (typeof parsed.username !== undefined && parsed.username !== '') {
+        result.userinfo = parsed.username + ':' + parsed.password;
+    }
+
+    if (typeof parsed.hostname !== undefined && parsed.hostname !== '') {
+        result.host = parsed.hostname;
+        if (result.host.startsWith('[')) {
+            result.host = result.host.substring(1);
+            result.host = result.host.slice(0, -1);
+        }
+    }
+
+    if (typeof parsed.port !== undefined && parsed.port !== '') {
+        result.port = Number(parsed.port);
+    }
+
+    if (typeof parsed.pathname !== undefined && parsed.pathname !== '/') {
+        result.path = parsed.pathname;
+    }
+    if (typeof parsed.search !== undefined && parsed.search !== '') {
+        result.query = parsed.search.replace('?', '');
+    }
+
+    if (typeof parsed.hash !== undefined && parsed.hash !== '') {
+        result.fragment = parsed.hash.replace('#', '');
+    }
+    return result;
 }
 
 export function serialize(components: URIComponents, options: URIOptions = {}): string {
-    let urlBuilder = new URL('remove://remove');
+    let startUrl = (components.scheme ?? 'http') + '://' + (components.host ?? '_removemehost_');
+    let urlBuilder;
+    try {
+        urlBuilder = new URL(startUrl);
+    } catch (error) {
+        error.message = error.message + ' ' + startUrl;
+        throw error;
+    }
     if (components.port) {
         urlBuilder.port = String(components.port);
     }
@@ -45,8 +87,17 @@ export function serialize(components: URIComponents, options: URIOptions = {}): 
         urlBuilder.pathname = components.path;
     }
     let result = urlBuilder.toString();
-    if (result === 'remove://remove') {
+    if (!components.scheme) {
+        result = result.substring(5);
+    }
+    if (!components.host) {
+        result = result.replace('_removemehost_', '');
+    }
+    if (!result.match(/[^\/]/)) {
         return '';
+    }
+    if (!components.path && result.endsWith('/')) {
+        result = result.slice(0, -1);
     }
     return result;
 }
