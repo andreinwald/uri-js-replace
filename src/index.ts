@@ -12,6 +12,7 @@ export function parse(uriString: string, options: URIOptions = {}): URIComponent
                 parsed = new URL('http:' + uriString);
                 addedDefaultScheme = true;
             } catch (otherError) {
+                firstError.message = firstError.message + ' or ' + 'http:' + uriString;
                 throw firstError;
             }
         } else {
@@ -99,21 +100,28 @@ export function serialize(components: URIComponents, options: URIOptions = {}): 
     if (!components.path && result.endsWith('/')) {
         result = result.slice(0, -1);
     }
-    return result;
+    return result.toLowerCase();
 }
 
 export function equal(uriA: URIComponents | string, uriB: URIComponents | string, options?: URIOptions): boolean {
+    let processedA;
+    let processedB;
+
     if (typeof uriA === "string") {
-        uriA = serialize(parse(uriA, options), options);
+        processedA = serialize(parse(uriA, options), options);
     } else if (typeof uriA === "object") {
-        uriA = serialize(<URIComponents>uriA, options);
+        processedA = serialize(uriA, options);
     }
     if (typeof uriB === "string") {
-        uriB = serialize(parse(uriB, options), options);
+        processedB = serialize(parse(uriB, options), options);
     } else if (typeof uriB === "object") {
-        uriB = serialize(<URIComponents>uriB, options);
+        processedB = serialize(uriB, options);
     }
-    return uriA === uriB;
+    if (processedA !== processedB) {
+        console.log(processedA);
+        console.log(processedB);
+    }
+    return processedA === processedB;
 }
 
 
@@ -124,9 +132,11 @@ export function resolve(baseURI: string, relativeURI: string, options?: URIOptio
 }
 
 export function normalize(uri: URIComponents | string, options?: URIOptions): URIComponents | string {
-    // TODO
-    console.error("Method normalize in URI.js not implemented yet")
-    return uri;
+    if (typeof uri === "string") {
+        return serialize(parse(uri));
+    } else {
+        return parse(serialize(uri));
+    }
 }
 
 export function pctEncChar(chr: string): string {

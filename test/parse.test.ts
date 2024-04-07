@@ -1,6 +1,5 @@
 import * as URI from '../src'
 import {expect, test} from 'vitest'
-import {URL} from "node:url";
 
 function strictEqual(received, expected, comment) {
     expect(received, comment).toStrictEqual(expected);
