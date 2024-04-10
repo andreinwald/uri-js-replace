@@ -4,16 +4,20 @@ import {URIComponents, URIOptions} from "./index";
 export function parse(uriString: string, options: URIOptions = {}): URIComponents {
     let parsed;
     let addedDefaultScheme = false;
+
+    if (uriString === '') {
+        throw new Error('URL cant be empty (uri-js-replace library)');
+    }
+
     try {
         parsed = new URL(uriString);
     } catch (firstError) {
-        firstError.message = firstError.message + ' ' + uriString;
+        firstError.message = firstError.message + ` "${uriString}" (uri-js-replace library)`;
         if (uriString.startsWith('//')) {
             try {
                 parsed = new URL('http:' + uriString);
                 addedDefaultScheme = true;
             } catch (otherError) {
-                firstError.message = firstError.message + ' or ' + 'http:' + uriString;
                 throw firstError;
             }
         } else {
