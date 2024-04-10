@@ -20,17 +20,8 @@ test("URI Serialization", function () {
     };
     strictEqual(URI.serialize(components), "uri://foo:bar@example.com:1/path?query#fragment", "All Components");
 
-    components = {
-        scheme: undefined,
-        userinfo: undefined,
-        host: undefined,
-        port: undefined,
-        path: undefined,
-        query: undefined,
-        fragment: undefined
-    };
+    components = {};
     strictEqual(URI.serialize(components), "", "Undefined Components");
-
 
     components = {
         scheme: "uri",
