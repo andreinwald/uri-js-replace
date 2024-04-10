@@ -7,7 +7,7 @@ export function resolve(baseURI: string, relativeURI: string): string {
 }
 
 export function resolveComponents(base: URIComponents, relative: URIComponents): URIComponents {
-    const target: URIComponents = {};
+    const target: URIComponents = {path: ''};
 
     base = normalize(base);
     relative = normalize(relative);

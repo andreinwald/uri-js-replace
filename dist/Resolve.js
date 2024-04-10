@@ -9,7 +9,7 @@ function resolve(baseURI, relativeURI) {
 }
 exports.resolve = resolve;
 function resolveComponents(base, relative) {
-    const target = {};
+    const target = { path: '' };
     base = (0, index_1.normalize)(base);
     relative = (0, index_1.normalize)(relative);
     if (relative.scheme) {

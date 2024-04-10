@@ -3,32 +3,28 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.parse = void 0;
 const node_url_1 = require("node:url");
 function parse(uriString, options = {}) {
+    let result = { path: '' };
     let parsed;
     let addedDefaultScheme = false;
-    if (uriString === '') {
-        throw new Error('URL cant be empty (uri-js-replace library)');
-    }
     try {
         parsed = new node_url_1.URL(uriString);
     }
     catch (firstError) {
-        firstError.message = firstError.message + ` "${uriString}" (uri-js-replace library)`;
         if (uriString.startsWith('//')) {
             try {
                 parsed = new node_url_1.URL('http:' + uriString);
                 addedDefaultScheme = true;
             }
             catch (otherError) {
-                throw firstError;
+                result.error = firstError.message;
+                return result;
             }
         }
         else {
-            throw firstError;
+            result.error = firstError.message;
+            return result;
         }
     }
-    let result = {
-        path: '',
-    };
     if (typeof parsed.protocol !== undefined && parsed.protocol !== '' && !addedDefaultScheme) {
         result.scheme = String(parsed.protocol).replace(':', '');
     }

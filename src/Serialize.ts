@@ -8,8 +8,8 @@ export function serialize(components: URIComponents, options: URIOptions = {}): 
     try {
         urlBuilder = new URL(startUrl);
     } catch (error) {
-        error.message = error.message + ' ' + startUrl;
-        throw error;
+        console.error(error.message + ' ' + startUrl);
+        return '';
     }
     if (components.scheme) {
         urlBuilder.protocol = components.scheme;

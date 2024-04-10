@@ -11,8 +11,8 @@ function serialize(components, options = {}) {
         urlBuilder = new node_url_1.URL(startUrl);
     }
     catch (error) {
-        error.message = error.message + ' ' + startUrl;
-        throw error;
+        console.error(error.message + ' ' + startUrl);
+        return '';
     }
     if (components.scheme) {
         urlBuilder.protocol = components.scheme;

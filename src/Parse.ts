@@ -2,31 +2,26 @@ import {URL} from "node:url";
 import {URIComponents, URIOptions} from "./index";
 
 export function parse(uriString: string, options: URIOptions = {}): URIComponents {
+    let result: URIComponents = {path: ''};
     let parsed;
     let addedDefaultScheme = false;
-
-    if (uriString === '') {
-        throw new Error('URL cant be empty (uri-js-replace library)');
-    }
 
     try {
         parsed = new URL(uriString);
     } catch (firstError) {
-        firstError.message = firstError.message + ` "${uriString}" (uri-js-replace library)`;
         if (uriString.startsWith('//')) {
             try {
                 parsed = new URL('http:' + uriString);
                 addedDefaultScheme = true;
             } catch (otherError) {
-                throw firstError;
+                result.error = firstError.message;
+                return result;
             }
         } else {
-            throw firstError;
+            result.error = firstError.message;
+            return result;
         }
     }
-    let result: URIComponents = {
-        path: '',
-    };
     if (typeof parsed.protocol !== undefined && parsed.protocol !== '' && !addedDefaultScheme) {
         result.scheme = String(parsed.protocol).replace(':', '');
     }

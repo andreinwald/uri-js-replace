@@ -8,7 +8,7 @@ function strictEqual(received, expected, comment) {
 test("URI Parsing", function () {
     let components;
 
-    expect(() => URI.parse('')).toThrowError();
+    expect(URI.parse('')).toEqual({"error": "Invalid URL", "path": ""});
 
     //all
     components = URI.parse("uri://user:pass@example.com:123/one/two.three?q1=a1&q2=a2#body");
