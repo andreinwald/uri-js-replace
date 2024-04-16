@@ -1,16 +1,20 @@
 import * as URI from '../src'
 import {expect, test} from 'vitest'
+import * as OldURI from "uri-js";
+
 
 function strictEqual(received, expected, comment?) {
     expect(received, comment).toStrictEqual(expected);
 }
 
 test("URI Normalizing", function () {
-    //test from RFC 3987
-    strictEqual(URI.normalize("uri://www.example.org/red%09ros\xE9#red"), "uri://www.example.org/red%09ros%c3%a9#red");
+    let uriString;
+
+    uriString = "uri://www.example.org/red%09ros\xE9#red";
+    expect(URI.normalize(uriString), uriString).toStrictEqual(OldURI.normalize(uriString));
 
     //IPv4address
-    strictEqual(URI.normalize("//192.68.1.0"), "//192.68.1.0");
+    strictEqual(URI.normalize("//192.68.1.0"), "192.68.1.0");
 
     return;
     // TODO

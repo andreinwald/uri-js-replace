@@ -20,7 +20,7 @@ export function equal(uriA: URIComponents | string, uriB: URIComponents | string
     } else if (typeof uriB === "object") {
         processedB = serialize(uriB, options);
     }
-    return processedA === processedB;
+    return processedA.toLowerCase() === processedB.toLowerCase();
 }
 
 

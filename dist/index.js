@@ -35,7 +35,7 @@ function equal(uriA, uriB, options) {
     else if (typeof uriB === "object") {
         processedB = (0, Serialize_1.serialize)(uriB, options);
     }
-    return processedA === processedB;
+    return processedA.toLowerCase() === processedB.toLowerCase();
 }
 exports.equal = equal;
 function normalize(uri) {
