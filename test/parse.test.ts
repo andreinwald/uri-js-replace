@@ -8,13 +8,17 @@ function strictEqual(received, expected, comment) {
 test("URI Parsing", function () {
     let components;
 
-    // parse #/definitions/objectConfig
+    components = URI.parse("?query&params");
+    expect(components.query).toBe('query&params');
+
+    components = URI.parse("#/definitions/objectConfig");
+    expect(components.fragment).toBe('/definitions/objectConfig');
 
     components = URI.parse("defs.json#/definitions/int");
     expect(components.host).toBe('defs.json');
     expect(components.fragment).toBe('/definitions/int');
 
-    expect(URI.parse('')).toEqual({"error": "Invalid URL", "path": ""});
+    expect(URI.parse('')).toEqual({"path": ""});
 
     components = URI.parse("#");
     // strictEqual(components.error, undefined, "fragment errors");

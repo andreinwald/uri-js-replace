@@ -2,12 +2,14 @@ import {URL} from "node:url";
 import {URIComponents, URIOptions} from "./index";
 
 export function parse(uriString: string, options: URIOptions = {}): URIComponents {
+    let temporaryHost = '_remove_me_host_';
     let result: URIComponents = {path: ''};
     if (uriString.includes('#')) {
         result.fragment = '';
     }
     let parsed;
     let addedDefaultScheme = false;
+    let addedTemporaryHost = false;
 
     try {
         parsed = new URL(uriString);
@@ -25,8 +27,14 @@ export function parse(uriString: string, options: URIOptions = {}): URIComponent
                 parsed = new URL('https://' + uriString);
                 addedDefaultScheme = true;
             } catch (otherError) {
-                result.error = firstError.message;
-                return result;
+                try {
+                    parsed = new URL('https://' + temporaryHost + uriString);
+                    addedDefaultScheme = true;
+                    addedTemporaryHost = true;
+                } catch (otherError) {
+                    result.error = firstError.message;
+                    return result;
+                }
             }
         }
     }
@@ -38,7 +46,7 @@ export function parse(uriString: string, options: URIOptions = {}): URIComponent
         result.userinfo = parsed.username + ':' + parsed.password;
     }
 
-    if (typeof parsed.hostname !== undefined && parsed.hostname !== '') {
+    if (typeof parsed.hostname !== undefined && parsed.hostname !== '' && !addedTemporaryHost) {
         result.host = parsed.hostname;
         if (result.host.startsWith('[')) {
             result.host = result.host.substring(1);
@@ -60,5 +68,6 @@ export function parse(uriString: string, options: URIOptions = {}): URIComponent
     if (typeof parsed.hash !== undefined && parsed.hash !== '') {
         result.fragment = parsed.hash.replace('#', '');
     }
+    // console.log(`parse "${uriString}" options:`, options, ' to ', result);
     return result;
 }

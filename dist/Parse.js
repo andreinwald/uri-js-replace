@@ -3,16 +3,21 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.parse = void 0;
 const node_url_1 = require("node:url");
 function parse(uriString, options = {}) {
+    let temporaryHost = '_remove_me_host_';
     let result = { path: '' };
+    if (uriString.includes('#')) {
+        result.fragment = '';
+    }
     let parsed;
     let addedDefaultScheme = false;
+    let addedTemporaryHost = false;
     try {
         parsed = new node_url_1.URL(uriString);
     }
     catch (firstError) {
         if (uriString.startsWith('//')) {
             try {
-                parsed = new node_url_1.URL('http:' + uriString);
+                parsed = new node_url_1.URL('https:' + uriString);
                 addedDefaultScheme = true;
             }
             catch (otherError) {
@@ -21,8 +26,21 @@ function parse(uriString, options = {}) {
             }
         }
         else {
-            result.error = firstError.message;
-            return result;
+            try {
+                parsed = new node_url_1.URL('https://' + uriString);
+                addedDefaultScheme = true;
+            }
+            catch (otherError) {
+                try {
+                    parsed = new node_url_1.URL('https://' + temporaryHost + uriString);
+                    addedDefaultScheme = true;
+                    addedTemporaryHost = true;
+                }
+                catch (otherError) {
+                    result.error = firstError.message;
+                    return result;
+                }
+            }
         }
     }
     if (typeof parsed.protocol !== undefined && parsed.protocol !== '' && !addedDefaultScheme) {
@@ -31,7 +49,7 @@ function parse(uriString, options = {}) {
     if (typeof parsed.username !== undefined && parsed.username !== '') {
         result.userinfo = parsed.username + ':' + parsed.password;
     }
-    if (typeof parsed.hostname !== undefined && parsed.hostname !== '') {
+    if (typeof parsed.hostname !== undefined && parsed.hostname !== '' && !addedTemporaryHost) {
         result.host = parsed.hostname;
         if (result.host.startsWith('[')) {
             result.host = result.host.substring(1);
@@ -50,6 +68,7 @@ function parse(uriString, options = {}) {
     if (typeof parsed.hash !== undefined && parsed.hash !== '') {
         result.fragment = parsed.hash.replace('#', '');
     }
+    // console.log(`parse "${uriString}" options:`, options, ' to ', result);
     return result;
 }
 exports.parse = parse;
