@@ -8,7 +8,25 @@ function strictEqual(received, expected, comment) {
 test("URI Parsing", function () {
     let components;
 
+    // parse #/definitions/objectConfig
+
+    components = URI.parse("defs.json#/definitions/int");
+    expect(components.host).toBe('defs.json');
+    expect(components.fragment).toBe('/definitions/int');
+
     expect(URI.parse('')).toEqual({"error": "Invalid URL", "path": ""});
+
+    components = URI.parse("#");
+    // strictEqual(components.error, undefined, "fragment errors");
+    strictEqual(components.scheme, undefined, "scheme");
+    //strictEqual(components.authority, undefined, "authority");
+    strictEqual(components.userinfo, undefined, "userinfo");
+    strictEqual(components.host, undefined, "host");
+    strictEqual(components.port, undefined, "port");
+    strictEqual(components.path, "", "path");
+    strictEqual(components.query, undefined, "query");
+    strictEqual(components.fragment, "", "fragment");
+
 
     //all
     components = URI.parse("uri://user:pass@example.com:123/one/two.three?q1=a1&q2=a2#body");
@@ -119,18 +137,6 @@ test("URI Parsing", function () {
     strictEqual(components.path, "", "path");
     strictEqual(components.query, "", "query");
     strictEqual(components.fragment, undefined, "fragment");
-
-    //fragment
-    components = URI.parse("#");
-    strictEqual(components.error, undefined, "fragment errors");
-    strictEqual(components.scheme, undefined, "scheme");
-    //strictEqual(components.authority, undefined, "authority");
-    strictEqual(components.userinfo, undefined, "userinfo");
-    strictEqual(components.host, undefined, "host");
-    strictEqual(components.port, undefined, "port");
-    strictEqual(components.path, "", "path");
-    strictEqual(components.query, undefined, "query");
-    strictEqual(components.fragment, "", "fragment");
 
     //fragment with character tabulation
     components = URI.parse("#\t");

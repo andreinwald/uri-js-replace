@@ -3,6 +3,9 @@ import {URIComponents, URIOptions} from "./index";
 
 export function parse(uriString: string, options: URIOptions = {}): URIComponents {
     let result: URIComponents = {path: ''};
+    if (uriString.includes('#')) {
+        result.fragment = '';
+    }
     let parsed;
     let addedDefaultScheme = false;
 
@@ -11,15 +14,20 @@ export function parse(uriString: string, options: URIOptions = {}): URIComponent
     } catch (firstError) {
         if (uriString.startsWith('//')) {
             try {
-                parsed = new URL('http:' + uriString);
+                parsed = new URL('https:' + uriString);
                 addedDefaultScheme = true;
             } catch (otherError) {
                 result.error = firstError.message;
                 return result;
             }
         } else {
-            result.error = firstError.message;
-            return result;
+            try {
+                parsed = new URL('https://' + uriString);
+                addedDefaultScheme = true;
+            } catch (otherError) {
+                result.error = firstError.message;
+                return result;
+            }
         }
     }
     if (typeof parsed.protocol !== undefined && parsed.protocol !== '' && !addedDefaultScheme) {
