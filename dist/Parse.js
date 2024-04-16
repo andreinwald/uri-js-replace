@@ -4,7 +4,16 @@ exports.parse = void 0;
 const node_url_1 = require("node:url");
 function parse(uriString, options = {}) {
     let temporaryHost = '_remove_me_host_';
-    let result = { path: '' };
+    let result = {
+        path: '',
+        fragment: undefined,
+        host: undefined,
+        port: undefined,
+        query: undefined,
+        reference: undefined,
+        scheme: undefined,
+        userinfo: undefined,
+    };
     if (uriString.includes('#')) {
         result.fragment = '';
     }
@@ -27,7 +36,7 @@ function parse(uriString, options = {}) {
         }
         else {
             try {
-                parsed = new node_url_1.URL('https://' + uriString);
+                parsed = new node_url_1.URL('https:/' + uriString);
                 addedDefaultScheme = true;
             }
             catch (otherError) {
@@ -68,7 +77,18 @@ function parse(uriString, options = {}) {
     if (typeof parsed.hash !== undefined && parsed.hash !== '') {
         result.fragment = parsed.hash.replace('#', '');
     }
-    // console.log(`parse "${uriString}" options:`, options, ' to ', result);
+    if (result.scheme === undefined && result.userinfo === undefined && result.host === undefined && result.port === undefined && !result.path && result.query === undefined) {
+        result.reference = "same-document";
+    }
+    else if (result.scheme === undefined) {
+        result.reference = "relative";
+    }
+    else if (result.fragment === undefined) {
+        result.reference = "absolute";
+    }
+    else {
+        result.reference = "uri";
+    }
     return result;
 }
 exports.parse = parse;

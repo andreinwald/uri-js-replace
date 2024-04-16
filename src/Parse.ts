@@ -3,7 +3,16 @@ import {URIComponents, URIOptions} from "./index";
 
 export function parse(uriString: string, options: URIOptions = {}): URIComponents {
     let temporaryHost = '_remove_me_host_';
-    let result: URIComponents = {path: ''};
+    let result: URIComponents = {
+        path: '',
+        fragment: undefined,
+        host: undefined,
+        port: undefined,
+        query: undefined,
+        reference: undefined,
+        scheme: undefined,
+        userinfo: undefined,
+    };
     if (uriString.includes('#')) {
         result.fragment = '';
     }
@@ -24,7 +33,7 @@ export function parse(uriString: string, options: URIOptions = {}): URIComponent
             }
         } else {
             try {
-                parsed = new URL('https://' + uriString);
+                parsed = new URL('https:/' + uriString);
                 addedDefaultScheme = true;
             } catch (otherError) {
                 try {
@@ -68,6 +77,15 @@ export function parse(uriString: string, options: URIOptions = {}): URIComponent
     if (typeof parsed.hash !== undefined && parsed.hash !== '') {
         result.fragment = parsed.hash.replace('#', '');
     }
-    // console.log(`parse "${uriString}" options:`, options, ' to ', result);
+
+    if (result.scheme === undefined && result.userinfo === undefined && result.host === undefined && result.port === undefined && !result.path && result.query === undefined) {
+        result.reference = "same-document";
+    } else if (result.scheme === undefined) {
+        result.reference = "relative";
+    } else if (result.fragment === undefined) {
+        result.reference = "absolute";
+    } else {
+        result.reference = "uri";
+    }
     return result;
 }

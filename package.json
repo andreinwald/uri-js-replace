@@ -1,6 +1,6 @@
 {
   "name": "uri-js-replace",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "Replacement for old library URI.js (uri-js)",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -15,9 +15,9 @@
     "test": "vitest"
   },
   "devDependencies": {
-    "typescript": "^5.4.4",
     "@types/node": "^20.11.30",
-    "ajv": "^6.12.4",
+    "typescript": "^5.4.4",
+    "uri-js": "^4.4.1",
     "vitest": "^1.2.2"
   },
   "author": "https://github.com/andreinwald",

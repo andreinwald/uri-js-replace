@@ -1,3 +1,4 @@
+import * as OldURI from "uri-js";
 import * as URI from '../src'
 import {expect, test} from 'vitest'
 
@@ -5,20 +6,22 @@ function strictEqual(received, expected, comment) {
     expect(received, comment).toStrictEqual(expected);
 }
 
+
 test("URI Parsing", function () {
     let components;
+    let uriString;
 
-    components = URI.parse("?query&params");
-    expect(components.query).toBe('query&params');
+    uriString = "uri://user:pass@example.com:123/one/two.three?q1=a1&q2=a2#body";
+    expect(URI.parse(uriString), uriString).toStrictEqual(OldURI.parse(uriString));
 
-    components = URI.parse("#/definitions/objectConfig");
-    expect(components.fragment).toBe('/definitions/objectConfig');
+    uriString = "?query&params";
+    expect(URI.parse(uriString), uriString).toStrictEqual(OldURI.parse(uriString));
 
-    components = URI.parse("defs.json#/definitions/int");
-    expect(components.host).toBe('defs.json');
-    expect(components.fragment).toBe('/definitions/int');
+    uriString = "#/definitions/objectConfig";
+    expect(URI.parse(uriString), uriString).toStrictEqual(OldURI.parse(uriString));
 
-    expect(URI.parse('')).toEqual({"path": ""});
+    uriString = '';
+    expect(URI.parse(uriString), uriString).toStrictEqual(OldURI.parse(uriString));
 
     components = URI.parse("#");
     // strictEqual(components.error, undefined, "fragment errors");
