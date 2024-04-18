@@ -1,8 +1,9 @@
 import {URL} from "node:url";
 import {URIComponents, URIOptions} from "./index";
 
+const temporaryHost = '_remove_me_host_';
+
 export function parse(uriString: string, options: URIOptions = {}): URIComponents {
-    let temporaryHost = '_remove_me_host_';
     let result: URIComponents = {
         path: '',
         fragment: undefined,
@@ -16,37 +17,17 @@ export function parse(uriString: string, options: URIOptions = {}): URIComponent
     if (uriString.includes('#')) {
         result.fragment = '';
     }
-    let parsed;
-    let addedDefaultScheme = false;
-    let addedTemporaryHost = false;
-
-    try {
-        parsed = new URL(uriString);
-    } catch (firstError) {
-        if (uriString.startsWith('//')) {
-            try {
-                parsed = new URL('https:' + uriString);
-                addedDefaultScheme = true;
-            } catch (otherError) {
-                result.error = firstError.message;
-                return result;
-            }
-        } else {
-            try {
-                parsed = new URL('https:/' + uriString);
-                addedDefaultScheme = true;
-            } catch (otherError) {
-                try {
-                    parsed = new URL('https://' + temporaryHost + uriString);
-                    addedDefaultScheme = true;
-                    addedTemporaryHost = true;
-                } catch (otherError) {
-                    result.error = firstError.message;
-                    return result;
-                }
-            }
-        }
+    let {
+        parsed,
+        addedDefaultScheme,
+        addedTemporaryHost,
+        error,
+    } = recognizeUrl(uriString);
+    if (error) {
+        result.error = error;
+        return result;
     }
+
     if (typeof parsed.protocol !== undefined && parsed.protocol !== '' && !addedDefaultScheme) {
         result.scheme = String(parsed.protocol).replace(':', '');
     }
@@ -87,5 +68,46 @@ export function parse(uriString: string, options: URIOptions = {}): URIComponent
     } else {
         result.reference = "uri";
     }
+    return result;
+}
+
+function recognizeUrl(uriString: string) {
+    let result = {
+        parsed: undefined,
+        addedDefaultScheme: false,
+        addedTemporaryHost: false,
+        error: undefined,
+    }
+    let firstError;
+    try {
+        result.parsed = new URL(uriString);
+        return result;
+    } catch (error) {
+        firstError = error;
+    }
+    if (uriString.startsWith('//')) {
+        try {
+            result.parsed = new URL('https:' + uriString);
+            result.addedDefaultScheme = true;
+            return result;
+        } catch (otherError) {
+            result.error = firstError.message;
+            return result;
+        }
+    }
+    try {
+        result.parsed = new URL('https://' + uriString);
+        result.addedDefaultScheme = true;
+        return result;
+    } catch (error) {
+    }
+    try {
+        result.parsed = new URL('https://' + temporaryHost + uriString);
+        result.addedDefaultScheme = true;
+        result.addedTemporaryHost = true;
+        return result;
+    } catch (error) {
+    }
+    result.error = firstError.message;
     return result;
 }
