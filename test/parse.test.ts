@@ -14,16 +14,16 @@ test("URI Parsing", function () {
     uriString = "https://café.com";
     expect(URI.parse(uriString), uriString).toStrictEqual(OldURI.parse(uriString));
 
-    components = URI.parse("café.com");
-    strictEqual(components.host, 'xn--caf-dma.com', 'café.com host');
-
-    components = URI.parse("//café.com");
-    strictEqual(components.host, 'xn--caf-dma.com', 'café.com host');
-
     uriString = "uri://user:pass@example.com:123/one/two.three?q1=a1&q2=a2#body";
     expect(URI.parse(uriString), uriString).toStrictEqual(OldURI.parse(uriString));
 
     uriString = "meta/core#/$defs/anchorString";
+    expect(URI.parse(uriString), uriString).toStrictEqual(OldURI.parse(uriString));
+
+    uriString = "buu.json#/definitions/buu";
+    expect(URI.parse(uriString), uriString).toStrictEqual(OldURI.parse(uriString));
+
+    uriString = "name.json#/definitions/orNull";
     expect(URI.parse(uriString), uriString).toStrictEqual(OldURI.parse(uriString));
 
     uriString = "?query&params";

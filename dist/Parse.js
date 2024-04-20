@@ -90,16 +90,15 @@ function recognizeUrl(uriString) {
             return result;
         }
     }
-    try {
-        result.parsed = new URL('https://' + uriString);
-        result.addedDefaultScheme = true;
-        if (!result.parsed.host.includes('.')) {
-            throw new Error('wrong recognizing');
-        }
-        return result;
-    }
-    catch (error) {
-    }
+    // try {
+    //     result.parsed = new URL('https://' + uriString);
+    //     result.addedDefaultScheme = true;
+    //     if (!result.parsed.host.includes('.')) {
+    //         throw new Error('wrong recognizing');
+    //     }
+    //     return result;
+    // } catch (error) {
+    // }
     try {
         result.parsed = new URL('https://' + temporaryHost + uriString);
         result.addedDefaultScheme = true;
