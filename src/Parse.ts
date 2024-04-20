@@ -1,6 +1,4 @@
-import {URL} from "node:url";
 import {URIComponents, URIOptions} from "./index";
-
 const temporaryHost = '_remove_me_host_';
 
 export function parse(uriString: string, options: URIOptions = {}): URIComponents {

@@ -1,9 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.parse = void 0;
-const node_url_1 = require("node:url");
+const temporaryHost = '_remove_me_host_';
 function parse(uriString, options = {}) {
-    let temporaryHost = '_remove_me_host_';
     let result = {
         path: '',
         fragment: undefined,
@@ -17,40 +16,10 @@ function parse(uriString, options = {}) {
     if (uriString.includes('#')) {
         result.fragment = '';
     }
-    let parsed;
-    let addedDefaultScheme = false;
-    let addedTemporaryHost = false;
-    try {
-        parsed = new node_url_1.URL(uriString);
-    }
-    catch (firstError) {
-        if (uriString.startsWith('//')) {
-            try {
-                parsed = new node_url_1.URL('https:' + uriString);
-                addedDefaultScheme = true;
-            }
-            catch (otherError) {
-                result.error = firstError.message;
-                return result;
-            }
-        }
-        else {
-            try {
-                parsed = new node_url_1.URL('https:/' + uriString);
-                addedDefaultScheme = true;
-            }
-            catch (otherError) {
-                try {
-                    parsed = new node_url_1.URL('https://' + temporaryHost + uriString);
-                    addedDefaultScheme = true;
-                    addedTemporaryHost = true;
-                }
-                catch (otherError) {
-                    result.error = firstError.message;
-                    return result;
-                }
-            }
-        }
+    let { parsed, addedDefaultScheme, addedTemporaryHost, error, } = recognizeUrl(uriString);
+    if (error) {
+        result.error = error;
+        return result;
     }
     if (typeof parsed.protocol !== undefined && parsed.protocol !== '' && !addedDefaultScheme) {
         result.scheme = String(parsed.protocol).replace(':', '');
@@ -92,3 +61,47 @@ function parse(uriString, options = {}) {
     return result;
 }
 exports.parse = parse;
+function recognizeUrl(uriString) {
+    let result = {
+        parsed: undefined,
+        addedDefaultScheme: false,
+        addedTemporaryHost: false,
+        error: undefined,
+    };
+    let firstError;
+    try {
+        result.parsed = new URL(uriString);
+        return result;
+    }
+    catch (error) {
+        firstError = error;
+    }
+    if (uriString.startsWith('//')) {
+        try {
+            result.parsed = new URL('https:' + uriString);
+            result.addedDefaultScheme = true;
+            return result;
+        }
+        catch (otherError) {
+            result.error = firstError.message;
+            return result;
+        }
+    }
+    try {
+        result.parsed = new URL('https://' + uriString);
+        result.addedDefaultScheme = true;
+        return result;
+    }
+    catch (error) {
+    }
+    try {
+        result.parsed = new URL('https://' + temporaryHost + uriString);
+        result.addedDefaultScheme = true;
+        result.addedTemporaryHost = true;
+        return result;
+    }
+    catch (error) {
+    }
+    result.error = firstError.message;
+    return result;
+}

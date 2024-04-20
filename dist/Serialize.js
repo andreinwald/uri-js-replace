@@ -1,7 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.serialize = void 0;
-const node_url_1 = require("node:url");
 function serialize(components, options = {}) {
     let temporaryHostAndScheme = 'https://_remove_me_host_';
     let temporaryHost = '_remove_me_host_';
@@ -29,7 +28,7 @@ function serialize(components, options = {}) {
     }
     let urlBuilder;
     try {
-        urlBuilder = new node_url_1.URL(startUrl);
+        urlBuilder = new URL(startUrl);
     }
     catch (error) {
         console.error(error.message + ' ' + startUrl);

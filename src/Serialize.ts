@@ -1,4 +1,3 @@
-import {URL} from "node:url";
 import {URIComponents, URIOptions} from "./index";
 
 export function serialize(components: URIComponents, options: URIOptions = {}): string {
