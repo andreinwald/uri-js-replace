@@ -1,5 +1,7 @@
 import {URIComponents, URIOptions} from "./index";
-const temporaryHost = '_remove_me_host_';
+import {URLSearchParams} from "url";
+
+const temporaryHost = '_remove_me_host/';
 
 export function parse(uriString: string, options: URIOptions = {}): URIComponents {
     let result: URIComponents = {
@@ -48,6 +50,9 @@ export function parse(uriString: string, options: URIOptions = {}): URIComponent
 
     if (typeof parsed.pathname !== undefined && parsed.pathname !== '/') {
         result.path = parsed.pathname;
+        if (addedTemporaryHost && result.path.startsWith('/')) {
+            result.path = result.path.substring(1);
+        }
     }
     if (typeof parsed.search !== undefined && parsed.search !== '') {
         result.query = parsed.search.replace('?', '');
@@ -69,8 +74,30 @@ export function parse(uriString: string, options: URIOptions = {}): URIComponent
     return result;
 }
 
+type URlProps = {
+    hash: string;
+    host: string;
+    hostname: string;
+    href: string;
+    readonly origin: string;
+    password: string;
+    pathname: string;
+    port: string;
+    protocol: string;
+    search: string;
+    readonly searchParams: URLSearchParams;
+    username: string;
+    toString(): string;
+    toJSON(): string;
+}
+
 function recognizeUrl(uriString: string) {
-    let result = {
+    let result: {
+        parsed: URlProps,
+        addedDefaultScheme: boolean,
+        addedTemporaryHost: boolean,
+        error: undefined,
+    } = {
         parsed: undefined,
         addedDefaultScheme: false,
         addedTemporaryHost: false,
@@ -96,6 +123,9 @@ function recognizeUrl(uriString: string) {
     try {
         result.parsed = new URL('https://' + uriString);
         result.addedDefaultScheme = true;
+        if (!result.parsed.host.includes('.')) {
+            throw new Error('wrong recognizing');
+        }
         return result;
     } catch (error) {
     }

@@ -23,6 +23,9 @@ test("URI Parsing", function () {
     uriString = "uri://user:pass@example.com:123/one/two.three?q1=a1&q2=a2#body";
     expect(URI.parse(uriString), uriString).toStrictEqual(OldURI.parse(uriString));
 
+    uriString = "meta/core#/$defs/anchorString";
+    expect(URI.parse(uriString), uriString).toStrictEqual(OldURI.parse(uriString));
+
     uriString = "?query&params";
     expect(URI.parse(uriString), uriString).toStrictEqual(OldURI.parse(uriString));
 
