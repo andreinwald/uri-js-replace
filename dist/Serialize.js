@@ -1,37 +1,37 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.serialize = void 0;
-function serialize(components, options = {}) {
+function serialize(components) {
     let temporaryHostAndScheme = 'https://_remove_me_host_';
     let temporaryHost = '_remove_me_host_';
     let temporaryScheme = 'https://';
-    let startUrl;
-    let temporaryHostAndSchemeUsed = false;
     let temporarySchemeUsed = false;
     let temporaryHostUsed = false;
+    let temporaryHostAndSchemeUsed = false;
+    let startUrl = '';
     if (components.scheme && components.host) {
         startUrl = components.scheme + '://' + components.host;
     }
-    else {
-        if (!components.scheme && !components.host) {
-            temporaryHostAndSchemeUsed = true;
-            startUrl = temporaryHostAndScheme;
-        }
-        if (!components.host && components.scheme) {
-            temporaryHostUsed = true;
-            startUrl = components.scheme + '://' + temporaryHost;
-        }
-        if (components.host && !components.scheme) {
-            temporarySchemeUsed = true;
-            startUrl = temporaryScheme + components.host;
-        }
+    if (!components.host && components.scheme) {
+        temporaryHostUsed = true;
+        startUrl = components.scheme + '://' + temporaryHost;
+    }
+    if (components.host && !components.scheme) {
+        temporarySchemeUsed = true;
+        startUrl = temporaryScheme + components.host;
+    }
+    if (!components.host && !components.scheme) {
+        temporaryHostAndSchemeUsed = true;
+        startUrl = temporaryHostAndScheme;
     }
     let urlBuilder;
     try {
         urlBuilder = new URL(startUrl);
     }
     catch (error) {
-        console.error(error.message + ' ' + startUrl);
+        if (error.message) {
+            console.error(error.message + ' ' + startUrl);
+        }
         return '';
     }
     if (components.scheme) {
@@ -54,8 +54,12 @@ function serialize(components, options = {}) {
     }
     if (components.userinfo) {
         let parts = components.userinfo.split(':');
-        urlBuilder.username = parts[0];
-        urlBuilder.password = parts[1];
+        if (parts[0]) {
+            urlBuilder.username = parts[0];
+        }
+        if (parts[1]) {
+            urlBuilder.password = parts[1];
+        }
     }
     if (components.query) {
         urlBuilder.search = components.query;
@@ -79,7 +83,7 @@ function serialize(components, options = {}) {
     if (temporarySchemeUsed) {
         result = result.replace(temporaryScheme, '');
     }
-    if (!result.match(/[^\/]/)) { // only // left
+    if (!result.match(/[^\/]/)) {
         return '';
     }
     return result;

@@ -67,11 +67,9 @@ function resolveComponents(base, relative) {
 }
 exports.resolveComponents = resolveComponents;
 function removeDotSegments(input) {
-    // Copied just for "resolveComponents" method
     const RDS1 = /^\.\.?\//;
     const RDS2 = /^\/\.(\/|$)/;
     const RDS3 = /^\/\.\.(\/|$)/;
-    const RDS4 = /^\.\.?$/;
     const RDS5 = /^\/?(?:.|\n)*?(?=\/|$)/;
     const output = [];
     while (input.length) {

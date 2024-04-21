@@ -20,20 +20,20 @@ const Parse_1 = require("./Parse");
 __exportStar(require("./Resolve"), exports);
 __exportStar(require("./Serialize"), exports);
 __exportStar(require("./Parse"), exports);
-function equal(uriA, uriB, options) {
+function equal(uriA, uriB) {
     let processedA;
     let processedB;
     if (typeof uriA === "string") {
-        processedA = (0, Serialize_1.serialize)((0, Parse_1.parse)(uriA, options), options);
+        processedA = (0, Serialize_1.serialize)((0, Parse_1.parse)(uriA));
     }
-    else if (typeof uriA === "object") {
-        processedA = (0, Serialize_1.serialize)(uriA, options);
+    else {
+        processedA = (0, Serialize_1.serialize)(uriA);
     }
     if (typeof uriB === "string") {
-        processedB = (0, Serialize_1.serialize)((0, Parse_1.parse)(uriB, options), options);
+        processedB = (0, Serialize_1.serialize)((0, Parse_1.parse)(uriB));
     }
-    else if (typeof uriB === "object") {
-        processedB = (0, Serialize_1.serialize)(uriB, options);
+    else {
+        processedB = (0, Serialize_1.serialize)(uriB);
     }
     return processedA.toLowerCase() === processedB.toLowerCase();
 }

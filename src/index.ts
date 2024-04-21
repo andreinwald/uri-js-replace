@@ -6,19 +6,19 @@ export * from "./Resolve";
 export * from "./Serialize";
 export * from "./Parse";
 
-export function equal(uriA: URIComponents | string, uriB: URIComponents | string, options?: URIOptions): boolean {
+export function equal(uriA: URIComponents | string, uriB: URIComponents | string): boolean {
     let processedA;
     let processedB;
 
     if (typeof uriA === "string") {
-        processedA = serialize(parse(uriA, options), options);
-    } else if (typeof uriA === "object") {
-        processedA = serialize(uriA, options);
+        processedA = serialize(parse(uriA));
+    } else {
+        processedA = serialize(uriA);
     }
     if (typeof uriB === "string") {
-        processedB = serialize(parse(uriB, options), options);
-    } else if (typeof uriB === "object") {
-        processedB = serialize(uriB, options);
+        processedB = serialize(parse(uriB));
+    } else {
+        processedB = serialize(uriB);
     }
     return processedA.toLowerCase() === processedB.toLowerCase();
 }
@@ -36,24 +36,24 @@ export function normalize(uri: URIComponents | string): URIComponents | string {
 
 
 export interface URIComponents {
-    scheme?: string;
-    userinfo?: string;
-    host?: string;
-    port?: number | string;
-    path?: string;
-    query?: string;
-    fragment?: string;
-    reference?: string;
-    error?: string;
+    scheme?: string | undefined;
+    userinfo?: string | undefined;
+    host?: string | undefined;
+    port?: number | string | undefined;
+    path?: string | undefined;
+    query?: string | undefined;
+    fragment?: string | undefined;
+    reference?: string | undefined;
+    error?: string | undefined;
 }
 
 export interface URIOptions {
-    scheme?: string;
-    reference?: string;
-    tolerant?: boolean;
-    absolutePath?: boolean;
-    iri?: boolean;
-    unicodeSupport?: boolean;
-    domainHost?: boolean;
+    scheme?: string | undefined;
+    reference?: string | undefined;
+    tolerant?: boolean | undefined;
+    absolutePath?: boolean | undefined;
+    iri?: boolean | undefined;
+    unicodeSupport?: boolean | undefined;
+    domainHost?: boolean | undefined;
 }
 

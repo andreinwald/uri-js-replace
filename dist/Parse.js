@@ -1,8 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.parse = void 0;
-const temporaryHost = '_remove_me_host/';
-function parse(uriString, options = {}) {
+function parse(uriString) {
     let result = {
         path: '',
         fragment: undefined,
@@ -17,7 +16,7 @@ function parse(uriString, options = {}) {
         result.fragment = '';
     }
     let { parsed, addedDefaultScheme, addedTemporaryHost, error, } = recognizeUrl(uriString);
-    if (error) {
+    if (error || parsed === undefined) {
         result.error = error;
         return result;
     }
@@ -64,6 +63,7 @@ function parse(uriString, options = {}) {
     return result;
 }
 exports.parse = parse;
+const temporaryHost = '_remove_me_host/';
 function recognizeUrl(uriString) {
     let result = {
         parsed: undefined,
@@ -90,22 +90,13 @@ function recognizeUrl(uriString) {
             return result;
         }
     }
-    // try {
-    //     result.parsed = new URL('https://' + uriString);
-    //     result.addedDefaultScheme = true;
-    //     if (!result.parsed.host.includes('.')) {
-    //         throw new Error('wrong recognizing');
-    //     }
-    //     return result;
-    // } catch (error) {
-    // }
     try {
         result.parsed = new URL('https://' + temporaryHost + uriString);
         result.addedDefaultScheme = true;
         result.addedTemporaryHost = true;
         return result;
     }
-    catch (error) {
+    catch (otherError) {
     }
     result.error = firstError.message;
     return result;

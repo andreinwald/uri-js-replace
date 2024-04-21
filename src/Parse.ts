@@ -1,9 +1,7 @@
-import {URIComponents, URIOptions} from "./index";
+import {URIComponents} from "./index";
 import {URLSearchParams} from "url";
 
-const temporaryHost = '_remove_me_host/';
-
-export function parse(uriString: string, options: URIOptions = {}): URIComponents {
+export function parse(uriString: string): URIComponents {
     let result: URIComponents = {
         path: '',
         fragment: undefined,
@@ -23,11 +21,10 @@ export function parse(uriString: string, options: URIOptions = {}): URIComponent
         addedTemporaryHost,
         error,
     } = recognizeUrl(uriString);
-    if (error) {
+    if (error || parsed === undefined) {
         result.error = error;
         return result;
     }
-
     if (typeof parsed.protocol !== undefined && parsed.protocol !== '' && !addedDefaultScheme) {
         result.scheme = String(parsed.protocol).replace(':', '');
     }
@@ -91,9 +88,11 @@ type URlProps = {
     toJSON(): string;
 }
 
+const temporaryHost = '_remove_me_host/';
+
 function recognizeUrl(uriString: string) {
     let result: {
-        parsed: URlProps,
+        parsed: URlProps | undefined,
         addedDefaultScheme: boolean,
         addedTemporaryHost: boolean,
         error: undefined,
@@ -103,7 +102,7 @@ function recognizeUrl(uriString: string) {
         addedTemporaryHost: false,
         error: undefined,
     }
-    let firstError;
+    let firstError: any;
     try {
         result.parsed = new URL(uriString);
         return result;
@@ -120,21 +119,12 @@ function recognizeUrl(uriString: string) {
             return result;
         }
     }
-    // try {
-    //     result.parsed = new URL('https://' + uriString);
-    //     result.addedDefaultScheme = true;
-    //     if (!result.parsed.host.includes('.')) {
-    //         throw new Error('wrong recognizing');
-    //     }
-    //     return result;
-    // } catch (error) {
-    // }
     try {
         result.parsed = new URL('https://' + temporaryHost + uriString);
         result.addedDefaultScheme = true;
         result.addedTemporaryHost = true;
         return result;
-    } catch (error) {
+    } catch (otherError) {
     }
     result.error = firstError.message;
     return result;
