@@ -1,49 +1,28 @@
 import {URIComponents} from "./index";
 
 export function serialize(components: URIComponents): string {
-    let temporaryHostAndScheme = 'https://_remove_me_host_';
-    let temporaryHost = '_remove_me_host_';
-    let temporaryScheme = 'https://';
-    let temporarySchemeUsed = false;
-    let temporaryHostUsed = false;
-    let temporaryHostAndSchemeUsed = false;
-
-    let startUrl = '';
-    if (components.scheme && components.host) {
-        startUrl = components.scheme + '://' + components.host;
-    }
-    if (!components.host && components.scheme) {
-        temporaryHostUsed = true;
-        startUrl = components.scheme + '://' + temporaryHost;
-    }
-    if (components.host && !components.scheme) {
-        temporarySchemeUsed = true;
-        startUrl = temporaryScheme + components.host;
-    }
-    if (!components.host && !components.scheme) {
-        temporaryHostAndSchemeUsed = true;
-        startUrl = temporaryHostAndScheme;
-    }
-
+    let buildResult = buildStartUrl(components);
     let urlBuilder;
     try {
-        urlBuilder = new URL(startUrl);
+        urlBuilder = new URL(buildResult.startUrl);
     } catch (error: any) {
         if (error.message) {
-            console.error(error.message + ' ' + startUrl);
+            console.error(error.message + ' ' + buildResult.startUrl);
         }
         return '';
     }
-    if (components.scheme) {
+    if (components.scheme !== undefined && !buildResult.temporarySchemeAndHostUsed && !buildResult.temporarySchemeUsed) {
         urlBuilder.protocol = components.scheme.toLowerCase();
+    } else {
+        components.scheme = '';
     }
-    if (components.port) {
-        urlBuilder.port = String(components.port);
-    }
-    if (components.host !== undefined && !temporaryHostUsed) {
+    if (components.host !== undefined && !buildResult.temporarySchemeAndHostUsed) {
         urlBuilder.host = components.host;
     } else {
         urlBuilder.host = '';
+    }
+    if (components.port) {
+        urlBuilder.port = String(components.port);
     }
     if (components.path) {
         urlBuilder.pathname = components.path;
@@ -69,20 +48,45 @@ export function serialize(components: URIComponents): string {
     if (!components.path && result.endsWith('/')) {
         result = result.slice(0, -1);
     }
-    if (temporaryHostAndSchemeUsed) {
-        result = result.replace(temporaryHostAndScheme, '');
+    if (buildResult.temporarySchemeAndHostUsed) {
+        result = result.replace(temporarySchemeAndHost, '');
         if (result.startsWith('/')) {
             result = result.slice(1);
         }
     }
-    if (temporaryHostUsed) {
-        result = result.replace(temporaryHost, '');
-    }
-    if (temporarySchemeUsed) {
+    if (buildResult.temporarySchemeUsed) {
         result = result.replace(temporaryScheme, '');
     }
-    if (!result.match(/[^\/]/)) { // only // left
+    if (!result.match(/[^\/]/)) { // only "//" left
         return '';
     }
+    return result;
+}
+
+const temporarySchemeAndHost = 'https://_remove_me_host_';
+const temporaryScheme = 'https://';
+
+
+function buildStartUrl(components: URIComponents) {
+    let result: {
+        startUrl: string,
+        temporarySchemeUsed: boolean,
+        temporarySchemeAndHostUsed: boolean
+    } = {
+        startUrl: '',
+        temporarySchemeUsed: false,
+        temporarySchemeAndHostUsed: false,
+    }
+    if (components.scheme && components.host) {
+        result.startUrl = components.scheme + '://' + components.host;
+        return result;
+    }
+    if (components.host) {
+        result.temporarySchemeUsed = true;
+        result.startUrl = temporaryScheme + components.host;
+        return result;
+    }
+    result.temporarySchemeAndHostUsed = true;
+    result.startUrl = temporarySchemeAndHost;
     return result;
 }

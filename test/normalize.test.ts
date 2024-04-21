@@ -3,12 +3,15 @@ import {expect, test} from 'vitest'
 import * as OldURI from "uri-js";
 
 
-function strictEqual(received, expected, comment?) {
+function strictEqual(received:any, expected:any, comment?:any) {
     expect(received, comment).toStrictEqual(expected);
 }
 
 test("URI Normalizing", function () {
     let uriString;
+
+    // uriString = "urn:some:ip:prop";
+    // expect(URI.normalize(uriString), uriString).toStrictEqual(OldURI.normalize(uriString));
 
     uriString = "uri://www.example.org/red%09ros\xE9#red";
     expect(URI.normalize(uriString), uriString).toStrictEqual(OldURI.normalize(uriString));

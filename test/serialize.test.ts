@@ -1,14 +1,17 @@
 import * as URI from '../src'
 import * as OldURI from "uri-js";
 import {expect, test} from 'vitest'
-import {URIComponents} from '../src'
 
-function strictEqual(received, expected, comment) {
+
+function strictEqual(received: any, expected: any, comment: any) {
     expect(received, comment).toStrictEqual(expected);
 }
 
 test("URI Serialization", function () {
-    let components: URIComponents;
+    let components: any;
+
+    // components = URI.parse("//e.com/types#/definitions/int");
+    // expect(URI.serialize(components), JSON.stringify(components)).toStrictEqual(OldURI.serialize(components));
 
     components = URI.parse("#/definitions/objectConfig");
     expect(URI.serialize(components), JSON.stringify(components)).toStrictEqual(OldURI.serialize(components));
