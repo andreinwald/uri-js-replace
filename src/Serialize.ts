@@ -14,7 +14,7 @@ export function serialize(components: URIComponents): string {
     if (components.scheme !== undefined && !buildResult.temporarySchemeAndHostUsed && !buildResult.temporarySchemeUsed) {
         urlBuilder.protocol = components.scheme.toLowerCase();
     } else {
-        components.scheme = '';
+        urlBuilder.protocol = '';
     }
     if (components.host !== undefined && !buildResult.temporarySchemeAndHostUsed) {
         urlBuilder.host = components.host;
@@ -26,8 +26,6 @@ export function serialize(components: URIComponents): string {
     }
     if (components.path) {
         urlBuilder.pathname = components.path;
-    } else {
-        urlBuilder.pathname = '';
     }
     if (components.userinfo) {
         let parts = components.userinfo.split(':');
@@ -56,9 +54,6 @@ export function serialize(components: URIComponents): string {
     }
     if (buildResult.temporarySchemeUsed) {
         result = result.replace(temporaryScheme, '');
-    }
-    if (!result.match(/[^\/]/)) { // only "//" left
-        return '';
     }
     return result;
 }
