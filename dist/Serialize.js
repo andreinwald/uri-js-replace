@@ -63,7 +63,7 @@ function serialize(components) {
 }
 exports.serialize = serialize;
 const temporarySchemeAndHost = 'https://_remove_me_host_';
-const temporaryScheme = 'https://';
+const temporaryScheme = 'https:';
 function buildStartUrl(components) {
     let result = {
         startUrl: '',

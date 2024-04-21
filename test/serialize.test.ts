@@ -10,10 +10,16 @@ function strictEqual(received: any, expected: any, comment: any) {
 test("URI Serialization", function () {
     let components: any;
 
-    // components = URI.parse("//e.com/types#/definitions/int");
-    // expect(URI.serialize(components), JSON.stringify(components)).toStrictEqual(OldURI.serialize(components));
+    components = URI.parse("//e.com/types#/definitions/int");
+    expect(URI.serialize(components), JSON.stringify(components)).toStrictEqual(OldURI.serialize(components));
 
     components = URI.parse("#/definitions/objectConfig");
+    expect(URI.serialize(components), JSON.stringify(components)).toStrictEqual(OldURI.serialize(components));
+
+    components = {host: "10.10.10.10.example.com"};
+    expect(URI.serialize(components), JSON.stringify(components)).toStrictEqual(OldURI.serialize(components));
+
+    components = {host: "[2001:db8::7]"};
     expect(URI.serialize(components), JSON.stringify(components)).toStrictEqual(OldURI.serialize(components));
 
     components = {
@@ -47,9 +53,4 @@ test("URI Serialization", function () {
         port: "9000",
     };
     strictEqual(URI.serialize(components), "uri://example.com:9000", "String port");
-
-    strictEqual(URI.serialize({host: "10.10.10.10.example.com"}), "10.10.10.10.example.com", "Mixed IPv4address & reg-name");
-
-    strictEqual(URI.serialize({host: "[2001:db8::7]"}), "[2001:db8::7]", "IPv6 Host");
-    strictEqual(URI.serialize({host: "[2606:2800:220:1:248:1893:25c8:1946]"}), "[2606:2800:220:1:248:1893:25c8:1946]", "IPv6 Full Host");
 });

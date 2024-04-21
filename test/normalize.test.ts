@@ -2,11 +2,6 @@ import * as URI from '../src'
 import {expect, test} from 'vitest'
 import * as OldURI from "uri-js";
 
-
-function strictEqual(received:any, expected:any, comment?:any) {
-    expect(received, comment).toStrictEqual(expected);
-}
-
 test("URI Normalizing", function () {
     let uriString;
 
@@ -28,6 +23,9 @@ test("URI Normalizing", function () {
     uriString = '';
     expect(URI.normalize(uriString), uriString).toStrictEqual(OldURI.normalize(uriString));
 
-    //IPv4address
-    strictEqual(URI.normalize("//192.68.1.0"), "192.68.1.0");
+    uriString = "//192.68.1.0";
+    expect(URI.normalize(uriString), uriString).toStrictEqual(OldURI.normalize(uriString));
+
+    uriString = "192.68.1.0";
+    expect(URI.normalize(uriString), uriString).toStrictEqual(OldURI.normalize(uriString));
 });

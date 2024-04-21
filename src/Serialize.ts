@@ -59,7 +59,7 @@ export function serialize(components: URIComponents): string {
 }
 
 const temporarySchemeAndHost = 'https://_remove_me_host_';
-const temporaryScheme = 'https://';
+const temporaryScheme = 'https:';
 
 
 function buildStartUrl(components: URIComponents) {
