@@ -2,7 +2,7 @@ import * as OldURI from "uri-js";
 import * as URI from '../src'
 import {expect, test} from 'vitest'
 
-function strictEqual(received, expected, comment) {
+function strictEqual(received:any, expected:any, comment:any) {
     expect(received, comment).toStrictEqual(expected);
 }
 
