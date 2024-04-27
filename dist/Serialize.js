@@ -19,7 +19,7 @@ function serialize(components) {
     else {
         urlBuilder.protocol = '';
     }
-    if (components.host !== undefined && !buildResult.temporarySchemeAndHostUsed) {
+    if (components.host !== undefined && !buildResult.temporarySchemeAndHostUsed && !buildResult.temporaryHostUsed) {
         urlBuilder.host = components.host;
     }
     else {
@@ -56,17 +56,22 @@ function serialize(components) {
             result = result.slice(1);
         }
     }
+    if (buildResult.temporaryHostUsed) {
+        result = result.replace(temporaryHost, '');
+    }
     if (buildResult.temporarySchemeUsed) {
         result = result.replace(temporaryScheme, '');
     }
     return result;
 }
 exports.serialize = serialize;
-const temporarySchemeAndHost = 'https://_remove_me_host_';
 const temporaryScheme = 'https:';
+const temporaryHost = '_remove_me_host_';
+const temporarySchemeAndHost = temporaryScheme + '//' + temporaryHost;
 function buildStartUrl(components) {
     let result = {
         startUrl: '',
+        temporaryHostUsed: false,
         temporarySchemeUsed: false,
         temporarySchemeAndHostUsed: false,
     };
@@ -77,6 +82,15 @@ function buildStartUrl(components) {
     if (components.host) {
         result.temporarySchemeUsed = true;
         result.startUrl = temporaryScheme + components.host;
+        return result;
+    }
+    if (components.scheme) {
+        if (components.path) {
+            result.startUrl = components.scheme + ':' + components.path;
+            return result;
+        }
+        result.temporaryHostUsed = true;
+        result.startUrl = components.scheme + ':' + temporaryHost;
         return result;
     }
     result.temporarySchemeAndHostUsed = true;

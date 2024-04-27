@@ -16,7 +16,7 @@ export function serialize(components: URIComponents): string {
     } else {
         urlBuilder.protocol = '';
     }
-    if (components.host !== undefined && !buildResult.temporarySchemeAndHostUsed) {
+    if (components.host !== undefined && !buildResult.temporarySchemeAndHostUsed && !buildResult.temporaryHostUsed) {
         urlBuilder.host = components.host;
     } else {
         urlBuilder.host = '';
@@ -52,23 +52,29 @@ export function serialize(components: URIComponents): string {
             result = result.slice(1);
         }
     }
+    if (buildResult.temporaryHostUsed) {
+        result = result.replace(temporaryHost, '');
+    }
     if (buildResult.temporarySchemeUsed) {
         result = result.replace(temporaryScheme, '');
     }
     return result;
 }
 
-const temporarySchemeAndHost = 'https://_remove_me_host_';
 const temporaryScheme = 'https:';
+const temporaryHost = '_remove_me_host_';
+const temporarySchemeAndHost = temporaryScheme + '//' + temporaryHost;
 
 
 function buildStartUrl(components: URIComponents) {
     let result: {
         startUrl: string,
+        temporaryHostUsed: boolean,
         temporarySchemeUsed: boolean,
         temporarySchemeAndHostUsed: boolean
     } = {
         startUrl: '',
+        temporaryHostUsed: false,
         temporarySchemeUsed: false,
         temporarySchemeAndHostUsed: false,
     }
@@ -79,6 +85,15 @@ function buildStartUrl(components: URIComponents) {
     if (components.host) {
         result.temporarySchemeUsed = true;
         result.startUrl = temporaryScheme + components.host;
+        return result;
+    }
+    if (components.scheme) {
+        if (components.path) {
+            result.startUrl = components.scheme + ':' + components.path;
+            return result;
+        }
+        result.temporaryHostUsed = true;
+        result.startUrl = components.scheme + ':' + temporaryHost;
         return result;
     }
     result.temporarySchemeAndHostUsed = true;

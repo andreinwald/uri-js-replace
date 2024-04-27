@@ -32,8 +32,36 @@ test("URI Parsing", function () {
     uriString = "#/definitions/objectConfig";
     expect(URI.parse(uriString), uriString).toStrictEqual(OldURI.parse(uriString));
 
-    uriString = '';
+
+    uriString = 'zoommtg://zoom.us/join?confno=123';
     expect(URI.parse(uriString), uriString).toStrictEqual(OldURI.parse(uriString));
+
+    uriString = 'admin://etc/default/grub';
+    expect(URI.parse(uriString), uriString).toStrictEqual(OldURI.parse(uriString));
+
+    uriString = 'ws://example.com/foo?bar=baz';
+    expect(URI.parse(uriString), uriString).toStrictEqual({
+        "fragment": undefined,
+        "host": "example.com",
+        "path": "/foo",
+        "port": undefined,
+        "query": "bar=baz",
+        "reference": "absolute",
+        "scheme": "ws",
+        "userinfo": undefined,
+    });
+
+    uriString = 'ws://example.com/chat';
+    expect(URI.parse(uriString), uriString).toStrictEqual({
+        "fragment": undefined,
+        "host": "example.com",
+        "path": "/chat",
+        "port": undefined,
+        "query": undefined,
+        "reference": "absolute",
+        "scheme": "ws",
+        "userinfo": undefined,
+    });
 
     components = URI.parse("#");
     strictEqual(components.scheme, undefined, "scheme");
@@ -55,7 +83,6 @@ test("URI Parsing", function () {
     strictEqual(components.path, "/one/two.three", "path");
     strictEqual(components.query, "q1=a1&q2=a2", "query");
     strictEqual(components.fragment, "body", "fragment");
-
 
     //IPv4address
     components = URI.parse("http://10.10.10.10");
