@@ -5,7 +5,7 @@
 - Without using of deprecated punycode
 - Solves "The punycode module is deprecated" warning
 - Works in Node.js and browser
-- Tested with libraries: ESLint, [Ajv](https://github.com/ajv-validator/ajv)
+- Tested with libraries: ESLint, Webpack, [Ajv](https://github.com/ajv-validator/ajv)
 
 ### Add to your package.json
 ```json
