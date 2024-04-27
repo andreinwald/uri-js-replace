@@ -55,7 +55,7 @@ URI.serialize({scheme : "http", host : "example.com", fragment : "footer"}) === 
 
 ### Normalizing
 ```js
-URI.normalize("HTTP://ABC.com:80/%7Esmith/home.html") === "http://abc.com/~smith/home.html"
+URI.normalize("URI://www.example.org/red%09ros\xE9#red") === "uri://www.example.org/red%09ros%C3%A9#red"
 ```
 
 ## Tests
