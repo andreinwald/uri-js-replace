@@ -1,10 +1,9 @@
 # URI parsing/validating/resolving library
 **Replacement for abandoned library** [uri-js](https://www.npmjs.com/package/uri-js) aka "URI.js"<br>
 
-- Based on Node.js/browser [URL api](https://developer.mozilla.org/en-US/docs/Web/API/URL)
-- Without using of deprecated punycode
-- Solves "The punycode module is deprecated" warning
-- Works in Node.js and browser
+- Based on Node.js and browser [URL api](https://developer.mozilla.org/en-US/docs/Web/API/URL)
+- 99% compatible with original URI.js library
+- Solves "The punycode module is deprecated" warning in Node
 - Tested with libraries: ESLint, Webpack, [Ajv](https://github.com/ajv-validator/ajv)
 
 ### Add to your package.json
