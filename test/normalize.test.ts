@@ -6,7 +6,7 @@ test("URI Normalizing", function () {
     let uriStrings: string[] = [
         'https://a.b.example.com:80/@user/a/my.img.jpg?q=x&q=#start',
         'uri://user:pass@example.com:123/one/two.three?q1=a1&q2=a2#body',
-        'https://café.com',
+        'https://café.com/asd',
         'uri://www.example.org/red%09ros\xE9#red',
         '#/definitions/objectConfig',
         '?query&params',
