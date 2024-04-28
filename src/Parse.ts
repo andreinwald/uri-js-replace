@@ -30,7 +30,11 @@ export function parse(uriString: string): URIComponents {
     }
 
     if (typeof parsed.username !== undefined && parsed.username !== '') {
-        result.userinfo = parsed.username + ':' + parsed.password;
+        let userinfo = parsed.username;
+        if (parsed.password) {
+            userinfo += ':' + parsed.password;
+        }
+        result.userinfo = userinfo;
     }
 
     if (typeof parsed.hostname !== undefined && parsed.hostname !== '' && !addedTemporaryHost) {
