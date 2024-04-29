@@ -29,9 +29,6 @@ npm i uri-js-replace
 import * as URI from "uri-js";
 ```
 
-## Tested with libraries
-- [Ajv](https://github.com/ajv-validator/ajv)
-
 ## Usage examples
 ### Parsing
 ```js
