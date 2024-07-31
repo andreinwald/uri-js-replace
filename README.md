@@ -8,7 +8,9 @@
 - Solves "The punycode module is deprecated" warning in Node
 - Tested with libraries: ESLint, Webpack, [Ajv](https://github.com/ajv-validator/ajv)
 
-### Add to your package.json
+# Usage
+## NPM
+Add to your package.json
 ```json
 {
   "overrides": {
@@ -21,17 +23,20 @@ and run
 npm update
 ```
 
-### Or install from scratch
-```shell
-npm i uri-js-replace
-```
-```js
-import * as URI from "uri-js";
+## Yarn
+```json
+{
+  "resolutions": {
+    "uri-js": "npm:uri-js-replace"
+  }
+}
 ```
 
-## Usage examples
+# Library usage examples
 ### Parsing
 ```js
+import * as URI from "uri-js";
+
 URI.parse("uri://user:pass@example.com:123/one/two.three?q1=a1&q2=a2#body");
 //returns:
 //{
