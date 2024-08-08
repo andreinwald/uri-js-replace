@@ -67,6 +67,12 @@ All tests copied from original repository
 vitest
 ```
 
+### Generating d.ts files
+```shell
+npm i -g typescript
+tsc
+```
+
 ## NPM
 https://www.npmjs.com/package/uri-js-replace
 
