@@ -26,8 +26,8 @@ npm update
 ## Yarn
 ```json
 {
-  "resolutions": {
-    "uri-js": "npm:uri-js-replace"
+  "overrides": {
+    "uri-js": "yarn:uri-js-replace"
   }
 }
 ```
