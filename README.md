@@ -1,10 +1,13 @@
-# URI parsing/validating/resolving library
-**Drop-in replacement for abandoned library** [uri-js](https://www.npmjs.com/package/uri-js) aka "URI.js"<br>
+# Drop-in replacement for abandoned uri-js
 
-- Based on Node.js and browser [URL api](https://developer.mozilla.org/en-US/docs/Web/API/URL)
-- 99% compatible with original URI.js library
-- Solves CVE-2026-93690, CVE-2026-93751, CVE-2017-16021
-- Drop-in tested with large libraries: ESLint, Webpack, [Ajv](https://github.com/ajv-validator/ajv)
+Use it in `package.json` to override the abandoned [uri-js](https://www.npmjs.com/package/uri-js) package.
+
+- 99.9% compatible with the original API
+- Drop-in tested with large users (ESLint, Webpack, [Ajv](https://github.com/ajv-validator/ajv))
+- Based on the WHATWG [URL](https://developer.mozilla.org/en-US/docs/Web/API/URL) standard
+- Works in Node.js and browsers
+- Avoids the vulnerabilities in the original: CVE-2026-93690, CVE-2026-93751, and CVE-2017-16021
+
 
 # Usage
 ## NPM
@@ -24,51 +27,10 @@ npm update
 ## Yarn
 ```json
 {
-  "overrides": {
-    "uri-js": "yarn:uri-js-replace"
+  "resolutions": {
+    "uri-js": "npm:uri-js-replace"
   }
 }
-```
-
-# Library usage examples
-### Parsing
-```js
-import * as URI from "uri-js";
-
-URI.parse("uri://user:pass@example.com:123/one/two.three?q1=a1&q2=a2#body");
-//returns:
-//{
-//  scheme : "uri",
-//  userinfo : "user:pass",
-//  host : "example.com",
-//  port : 123,
-//  path : "/one/two.three",
-//  query : "q1=a1&q2=a2",
-//  fragment : "body"
-//}
-```
-
-### Serializing
-
-```js
-URI.serialize({scheme : "http", host : "example.com", fragment : "footer"}) === "http://example.com/#footer"
-```
-
-### Normalizing
-```js
-URI.normalize("URI://www.example.org/red%09ros\xE9#red") === "uri://www.example.org/red%09ros%C3%A9#red"
-```
-
-## Tests
-All tests copied from original repository
-```shell
-vitest
-```
-
-### Generating d.ts files
-```shell
-npm i -g typescript
-tsc
 ```
 
 ## NPM
