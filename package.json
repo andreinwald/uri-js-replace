@@ -13,13 +13,15 @@
     "url": "git+https://github.com/andreinwald/uri-js-replace.git"
   },
   "scripts": {
+    "build": "tsc",
     "test": "vitest"
   },
   "devDependencies": {
-    "@types/node": "^20.11.30",
-    "typescript": "^5.4.4",
+    "@types/node": "^22.20.5",
+    "typescript": "^5.9.3",
     "uri-js": "^4.4.1",
-    "vitest": "^1.2.2"
+    "vite": "^7.3.7",
+    "vitest": "^5.0.5"
   },
   "author": "https://github.com/andreinwald",
   "license": "MIT",
