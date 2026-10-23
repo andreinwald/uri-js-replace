@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.serialize = void 0;
+exports.serialize = serialize;
 function serialize(components) {
     let buildResult = buildStartUrl(components);
     let urlBuilder;
@@ -64,7 +64,6 @@ function serialize(components) {
     }
     return result;
 }
-exports.serialize = serialize;
 const temporaryScheme = 'https:';
 const temporaryHost = '_remove_me_host_';
 const temporarySchemeAndHost = temporaryScheme + '//' + temporaryHost;

@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.parse = void 0;
+exports.parse = parse;
 function parse(uriString) {
     let result = {
         path: '',
@@ -66,7 +66,6 @@ function parse(uriString) {
     }
     return result;
 }
-exports.parse = parse;
 const temporaryHost = '_remove_me_host/';
 function recognizeUrl(uriString) {
     let result = {

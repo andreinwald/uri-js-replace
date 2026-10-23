@@ -14,7 +14,8 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
     for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.normalize = exports.equal = void 0;
+exports.equal = equal;
+exports.normalize = normalize;
 const Serialize_1 = require("./Serialize");
 const Parse_1 = require("./Parse");
 __exportStar(require("./Resolve"), exports);
@@ -37,7 +38,6 @@ function equal(uriA, uriB) {
     }
     return processedA.toLowerCase() === processedB.toLowerCase();
 }
-exports.equal = equal;
 function normalize(uri) {
     if (typeof uri === "string") {
         return (0, Serialize_1.serialize)((0, Parse_1.parse)(uri));
@@ -46,4 +46,3 @@ function normalize(uri) {
         return (0, Parse_1.parse)((0, Serialize_1.serialize)(uri));
     }
 }
-exports.normalize = normalize;

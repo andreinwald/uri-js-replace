@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.resolveComponents = exports.resolve = void 0;
+exports.resolve = resolve;
+exports.resolveComponents = resolveComponents;
 const Parse_1 = require("./Parse");
 const Serialize_1 = require("./Serialize");
 function resolve(baseURI, relativeURI, options) {
@@ -8,7 +9,6 @@ function resolve(baseURI, relativeURI, options) {
     const resolved = resolveComponents((0, Parse_1.parse)(baseURI), (0, Parse_1.parse)(relativeURI), schemeLessOptions, true);
     return (0, Serialize_1.serialize)(resolved);
 }
-exports.resolve = resolve;
 function resolveComponents(base, relative, options, skipNormalization) {
     const target = {};
     if (!skipNormalization) {
@@ -69,7 +69,6 @@ function resolveComponents(base, relative, options, skipNormalization) {
     target.fragment = relative.fragment;
     return target;
 }
-exports.resolveComponents = resolveComponents;
 function removeDotSegments(input) {
     const RDS1 = /^\.\.?\//u;
     const RDS2 = /^\/\.(?:\/|$)/u;
