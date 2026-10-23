@@ -1,10 +1,10 @@
 # URI parsing/validating/resolving library
-**Replacement for abandoned library** [uri-js](https://www.npmjs.com/package/uri-js) aka "URI.js"<br>
+**Drop-in replacement for abandoned library** [uri-js](https://www.npmjs.com/package/uri-js) aka "URI.js"<br>
 
 - Based on Node.js and browser [URL api](https://developer.mozilla.org/en-US/docs/Web/API/URL)
 - 99% compatible with original URI.js library
-- Solves "The punycode module is deprecated" warning in Node
-- Tested with libraries: ESLint, Webpack, [Ajv](https://github.com/ajv-validator/ajv)
+- Solves CVE-2026-93690, CVE-2026-93751, CVE-2017-16021
+- Drop-in tested with large libraries: ESLint, Webpack, [Ajv](https://github.com/ajv-validator/ajv)
 
 # Usage
 ## NPM
@@ -73,8 +73,3 @@ tsc
 
 ## NPM
 https://www.npmjs.com/package/uri-js-replace
-
-## Related to
-- CVE-2026-93690 (removeDotSegments)
-- CVE-2026-93751 (pctDecChars)
-- CVE-2017-16021 (ReDoS)
