@@ -74,3 +74,7 @@ tsc
 ## NPM
 https://www.npmjs.com/package/uri-js-replace
 
+## Related to
+- CVE-2026-93690 (removeDotSegments)
+- CVE-2026-93751 (pctDecChars)
+- CVE-2017-16021 (ReDoS)
