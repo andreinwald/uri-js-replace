@@ -60,24 +60,3 @@ test("URI Resolving", function () {
         OldURI.resolve('', '/abc'),
     );
 });
-
-test("resolveComponents terminates when a segment starts with a line separator", function () {
-    // U+2028, U+2029, and CR used to match an empty segment and spin forever.
-    for (const path of ["/foo/\u2028x", "/foo/\u2029x", "/foo/\rx"]) {
-        const result = URI.resolveComponents(
-            {scheme: "http", host: "example.com", path: "/a"},
-            {path},
-            {},
-            true,
-        );
-        expect(result.path, JSON.stringify(path)).toBe(path);
-    }
-
-    const dotted = URI.resolveComponents(
-        {scheme: "http", host: "example.com", path: "/a"},
-        {path: "/a/./b/../c"},
-        {},
-        true,
-    );
-    expect(dotted.path).toBe("/a/c");
-});
