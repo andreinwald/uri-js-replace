@@ -19,6 +19,7 @@ export function parse(uriString: string): URIComponents {
         parsed,
         addedDefaultScheme,
         addedTemporaryHost,
+        opaquePath,
         error,
     } = recognizeUrl(uriString);
     if (error || parsed === undefined) {
@@ -49,7 +50,10 @@ export function parse(uriString: string): URIComponents {
         result.port = Number(parsed.port);
     }
 
-    if (typeof parsed.pathname !== undefined && parsed.pathname !== '/') {
+    if (opaquePath) {
+        // Path came from a non-special URL, so "." and ".." are still intact.
+        result.path = parsed.pathname;
+    } else if (typeof parsed.pathname !== undefined && parsed.pathname !== '/') {
         result.path = parsed.pathname;
         if (addedTemporaryHost && result.path.startsWith('/')) {
             result.path = result.path.substring(1);
@@ -92,18 +96,18 @@ type URlProps = {
     toJSON(): string;
 }
 
-const temporaryHost = '_remove_me_host/';
-
 function recognizeUrl(uriString: string) {
     let result: {
         parsed: URlProps | undefined,
         addedDefaultScheme: boolean,
         addedTemporaryHost: boolean,
+        opaquePath: boolean,
         error: undefined,
     } = {
         parsed: undefined,
         addedDefaultScheme: false,
         addedTemporaryHost: false,
+        opaquePath: false,
         error: undefined,
     }
     let firstError: any;
@@ -124,9 +128,12 @@ function recognizeUrl(uriString: string) {
         }
     }
     try {
-        result.parsed = new URL('https://' + temporaryHost + uriString);
+        // A non-special scheme keeps an opaque path, so "." and ".." survive
+        // until resolve(). A special URL such as https:// would remove them first.
+        result.parsed = new URL('nonspecial:' + uriString);
         result.addedDefaultScheme = true;
         result.addedTemporaryHost = true;
+        result.opaquePath = true;
         return result;
     } catch (otherError) {
     }

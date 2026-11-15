@@ -17,7 +17,7 @@ export function serialize(components: URIComponents): string {
         urlBuilder.protocol = '';
     }
     if (components.host !== undefined && !buildResult.temporarySchemeAndHostUsed && !buildResult.temporaryHostUsed) {
-        urlBuilder.host = components.host;
+        urlBuilder.host = bracketIpv6Host(components.host);
     } else {
         urlBuilder.host = '';
     }
@@ -65,6 +65,17 @@ const temporaryScheme = 'https:';
 const temporaryHost = '_remove_me_host_';
 const temporarySchemeAndHost = temporaryScheme + '//' + temporaryHost;
 
+// WHATWG URL rejects an IPv6 host unless it is wrapped in brackets.
+function bracketIpv6Host(host: string): string {
+    if (host.startsWith('[') && host.endsWith(']')) {
+        return host;
+    }
+    if (host.includes(':')) {
+        return '[' + host + ']';
+    }
+    return host;
+}
+
 
 function buildStartUrl(components: URIComponents) {
     let result: {
@@ -79,12 +90,12 @@ function buildStartUrl(components: URIComponents) {
         temporarySchemeAndHostUsed: false,
     }
     if (components.scheme && components.host) {
-        result.startUrl = components.scheme + '://' + components.host;
+        result.startUrl = components.scheme + '://' + bracketIpv6Host(components.host);
         return result;
     }
     if (components.host) {
         result.temporarySchemeUsed = true;
-        result.startUrl = temporaryScheme + components.host;
+        result.startUrl = temporaryScheme + bracketIpv6Host(components.host);
         return result;
     }
     if (components.scheme) {

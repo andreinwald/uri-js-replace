@@ -20,7 +20,7 @@ function serialize(components) {
         urlBuilder.protocol = '';
     }
     if (components.host !== undefined && !buildResult.temporarySchemeAndHostUsed && !buildResult.temporaryHostUsed) {
-        urlBuilder.host = components.host;
+        urlBuilder.host = bracketIpv6Host(components.host);
     }
     else {
         urlBuilder.host = '';
@@ -67,6 +67,15 @@ function serialize(components) {
 const temporaryScheme = 'https:';
 const temporaryHost = '_remove_me_host_';
 const temporarySchemeAndHost = temporaryScheme + '//' + temporaryHost;
+function bracketIpv6Host(host) {
+    if (host.startsWith('[') && host.endsWith(']')) {
+        return host;
+    }
+    if (host.includes(':')) {
+        return '[' + host + ']';
+    }
+    return host;
+}
 function buildStartUrl(components) {
     let result = {
         startUrl: '',
@@ -75,12 +84,12 @@ function buildStartUrl(components) {
         temporarySchemeAndHostUsed: false,
     };
     if (components.scheme && components.host) {
-        result.startUrl = components.scheme + '://' + components.host;
+        result.startUrl = components.scheme + '://' + bracketIpv6Host(components.host);
         return result;
     }
     if (components.host) {
         result.temporarySchemeUsed = true;
-        result.startUrl = temporaryScheme + components.host;
+        result.startUrl = temporaryScheme + bracketIpv6Host(components.host);
         return result;
     }
     if (components.scheme) {

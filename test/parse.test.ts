@@ -23,6 +23,13 @@ test("URI Parsing", function () {
         '192.68.1.0',
         'zoommtg://zoom.us/join?confno=123',
         'admin://etc/default/grub',
+        'http://[::1]:8080/x',
+        '../g',
+        '../../g',
+        '..',
+        '.',
+        './g',
+        '../',
         '',
     ];
 

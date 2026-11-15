@@ -27,6 +27,7 @@ test("URI Normalizing", function () {
         'mailto:one@example.com,two@example.com?subject=Hey&body=Sign%20me%20up!',
         'zoommtg://zoom.us/join?confno=123',
         'admin://etc/default/grub',
+        'http://[::1]:8080/x',
         '',
     ];
 

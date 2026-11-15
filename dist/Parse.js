@@ -15,7 +15,7 @@ function parse(uriString) {
     if (uriString.includes('#')) {
         result.fragment = '';
     }
-    let { parsed, addedDefaultScheme, addedTemporaryHost, error, } = recognizeUrl(uriString);
+    let { parsed, addedDefaultScheme, addedTemporaryHost, opaquePath, error, } = recognizeUrl(uriString);
     if (error || parsed === undefined) {
         result.error = error;
         return result;
@@ -40,7 +40,10 @@ function parse(uriString) {
     if (typeof parsed.port !== undefined && parsed.port !== '') {
         result.port = Number(parsed.port);
     }
-    if (typeof parsed.pathname !== undefined && parsed.pathname !== '/') {
+    if (opaquePath) {
+        result.path = parsed.pathname;
+    }
+    else if (typeof parsed.pathname !== undefined && parsed.pathname !== '/') {
         result.path = parsed.pathname;
         if (addedTemporaryHost && result.path.startsWith('/')) {
             result.path = result.path.substring(1);
@@ -66,12 +69,12 @@ function parse(uriString) {
     }
     return result;
 }
-const temporaryHost = '_remove_me_host/';
 function recognizeUrl(uriString) {
     let result = {
         parsed: undefined,
         addedDefaultScheme: false,
         addedTemporaryHost: false,
+        opaquePath: false,
         error: undefined,
     };
     let firstError;
@@ -94,9 +97,10 @@ function recognizeUrl(uriString) {
         }
     }
     try {
-        result.parsed = new URL('https://' + temporaryHost + uriString);
+        result.parsed = new URL('nonspecial:' + uriString);
         result.addedDefaultScheme = true;
         result.addedTemporaryHost = true;
+        result.opaquePath = true;
         return result;
     }
     catch (otherError) {
