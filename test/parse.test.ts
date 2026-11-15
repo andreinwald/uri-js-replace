@@ -164,3 +164,15 @@ test("URI Parsing", function () {
     strictEqual(components.query, undefined, "query");
     strictEqual(components.fragment, undefined, "fragment");
 });
+
+test("rejected absolute URIs keep their scheme", function () {
+    // WHATWG URL throws on these. They still have a scheme, so they must not
+    // come back as a relative path with no error.
+    for (const uriString of [
+        "http://example.com%2f%2e%2e",
+        "http://ex ample.com/",
+        "http:///",
+    ]) {
+        expect.soft(URI.parse(uriString), uriString).toStrictEqual(OldURI.parse(uriString));
+    }
+});

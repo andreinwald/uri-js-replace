@@ -83,3 +83,32 @@ test("URI Serialization", function () {
         'parse → serialize round-trip for absolute-relative path',
     ).toStrictEqual(OldURI.serialize(OldURI.parse('/rel/path')));
 });
+
+test("absolute paths keep their leading slash", function () {
+    for (const components of [
+        {path: "/a/../b"},
+        {path: "/foo/bar"},
+        {path: "/a/_remove_me_host_/b"},
+    ]) {
+        expect(URI.serialize(components), JSON.stringify(components))
+            .toStrictEqual(OldURI.serialize(components));
+    }
+});
+
+test("scheme and path do not invent a host", function () {
+    for (const components of [
+        {scheme: "http", path: "/foo"},
+        {scheme: "http", path: "foo"},
+        {scheme: "http", path: "/a/../b"},
+    ]) {
+        expect.soft(URI.serialize(components), JSON.stringify(components))
+            .toStrictEqual(OldURI.serialize(components));
+    }
+});
+
+// A relative path can come back as an absolute URL, and a later request follows that host.
+test("temporary host marker stays inside a path", function () {
+    const components = {path: "https://_remove_me_host_/secret"};
+    expect(URI.serialize(components), JSON.stringify(components))
+        .toStrictEqual(OldURI.serialize(components));
+});

@@ -28,6 +28,7 @@ test("URI Normalizing", function () {
         'zoommtg://zoom.us/join?confno=123',
         'admin://etc/default/grub',
         'http://[::1]:8080/x',
+        '/a/../b',
         '',
     ];
 
