@@ -83,3 +83,14 @@ test("URI Serialization", function () {
         'parse → serialize round-trip for absolute-relative path',
     ).toStrictEqual(OldURI.serialize(OldURI.parse('/rel/path')));
 });
+
+test("absolute paths keep their leading slash", function () {
+    for (const components of [
+        {path: "/a/../b"},
+        {path: "/foo/bar"},
+        {path: "/a/_remove_me_host_/b"},
+    ]) {
+        expect(URI.serialize(components), JSON.stringify(components))
+            .toStrictEqual(OldURI.serialize(components));
+    }
+});

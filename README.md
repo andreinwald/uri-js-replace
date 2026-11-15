@@ -6,7 +6,7 @@ Use it in `package.json` to override the abandoned [uri-js](https://www.npmjs.co
 - Drop-in tested with large users (ESLint, Webpack, [Ajv](https://github.com/ajv-validator/ajv))
 - Based on the WHATWG [URL](https://developer.mozilla.org/en-US/docs/Web/API/URL) standard
 - Works in Node.js and browsers
-- Avoids the vulnerabilities in the original: CVE-2026-93690, CVE-2026-93751, and CVE-2017-16021
+- Avoids the vulnerabilities in the original: [CVE-2026-93690](test/cve/CVE-2026-93690.test.ts), [CVE-2026-103387](test/cve/CVE-2026-103387.test.ts), [CVE-2026-93751](test/cve/CVE-2026-93751.test.ts), and [CVE-2017-16021](test/cve/CVE-2017-16021.test.ts)
 
 
 # Usage

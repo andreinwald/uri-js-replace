@@ -75,7 +75,7 @@ function removeDotSegments(input: string): string {
     const RDS1 = /^\.\.?\//u
     const RDS2 = /^\/\.(?:\/|$)/u
     const RDS3 = /^\/\.\.(?:\/|$)/u
-    const RDS5 = /^\/?(?:.|\n)*?(?=\/|$)/u
+    const RDS5 = /^\/?[\s\S]*?(?=\/|$)/u
 
     const output = []
 
@@ -91,8 +91,8 @@ function removeDotSegments(input: string): string {
             input = ''
         } else {
             const im = input.match(RDS5)
-            if (im) {
-                const s = im[0]
+            const s = im?.[0]
+            if (s) {
                 input = input.slice(s.length)
                 output.push(s)
             } else {

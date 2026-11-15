@@ -20,7 +20,11 @@ export function equal(uriA: URIComponents | string, uriB: URIComponents | string
     } else {
         processedB = serialize(uriB);
     }
-    return processedA.toLowerCase() === processedB.toLowerCase();
+    return percentEncodingCase(processedA) === percentEncodingCase(processedB);
+}
+
+function percentEncodingCase(uri: string): string {
+    return uri.replace(/%[0-9A-Fa-f]{2}/g, (match) => match.toUpperCase());
 }
 
 
