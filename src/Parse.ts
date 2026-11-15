@@ -51,8 +51,14 @@ export function parse(uriString: string): URIComponents {
     }
 
     if (opaquePath) {
-        // Path came from a non-special URL, so "." and ".." are still intact.
-        result.path = parsed.pathname;
+        // A non-special scheme keeps "." and ".." only when the path is opaque.
+        // A path-absolute is still normalized, so prefer the raw path when it differs.
+        const rawPath = pathBeforeQueryAndFragment(uriString);
+        if (rawPath.startsWith('/') && rawPath !== parsed.pathname) {
+            result.path = rawPath;
+        } else {
+            result.path = parsed.pathname;
+        }
     } else if (typeof parsed.pathname !== undefined && parsed.pathname !== '/') {
         result.path = parsed.pathname;
         if (addedTemporaryHost && result.path.startsWith('/')) {
@@ -94,6 +100,16 @@ type URlProps = {
     username: string;
     toString(): string;
     toJSON(): string;
+}
+
+function pathBeforeQueryAndFragment(uriString: string): string {
+    const hashIndex = uriString.indexOf('#');
+    const withoutFragment = hashIndex === -1 ? uriString : uriString.slice(0, hashIndex);
+    const queryIndex = withoutFragment.indexOf('?');
+    if (queryIndex === -1) {
+        return withoutFragment;
+    }
+    return withoutFragment.slice(0, queryIndex);
 }
 
 function recognizeUrl(uriString: string) {

@@ -1,4 +1,5 @@
 import * as URI from '../src'
+import * as OldURI from "uri-js";
 import {expect, test} from 'vitest'
 
 function strictEqual(received: any, expected: any, comment: any) {
@@ -54,4 +55,8 @@ test("URI Resolving", function () {
     strictEqual(URI.resolve(httpBase, '..'), 'http://a/b/', 'http ..')
     strictEqual(URI.resolve(httpBase, '.'), 'http://a/b/c/', 'http .')
     strictEqual(URI.resolve(httpBase, '/../g'), 'http://a/g', 'http /../g')
+
+    expect(URI.resolve('', '/abc'), 'resolve with empty base').toStrictEqual(
+        OldURI.resolve('', '/abc'),
+    );
 });

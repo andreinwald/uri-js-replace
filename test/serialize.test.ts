@@ -77,4 +77,9 @@ test("URI Serialization", function () {
         port: "9000",
     };
     strictEqual(URI.serialize(components), "uri://example.com:9000", "String port");
+
+    expect(
+        URI.serialize(URI.parse('/rel/path')),
+        'parse → serialize round-trip for absolute-relative path',
+    ).toStrictEqual(OldURI.serialize(OldURI.parse('/rel/path')));
 });

@@ -41,7 +41,13 @@ function parse(uriString) {
         result.port = Number(parsed.port);
     }
     if (opaquePath) {
-        result.path = parsed.pathname;
+        const rawPath = pathBeforeQueryAndFragment(uriString);
+        if (rawPath.startsWith('/') && rawPath !== parsed.pathname) {
+            result.path = rawPath;
+        }
+        else {
+            result.path = parsed.pathname;
+        }
     }
     else if (typeof parsed.pathname !== undefined && parsed.pathname !== '/') {
         result.path = parsed.pathname;
@@ -68,6 +74,15 @@ function parse(uriString) {
         result.reference = "uri";
     }
     return result;
+}
+function pathBeforeQueryAndFragment(uriString) {
+    const hashIndex = uriString.indexOf('#');
+    const withoutFragment = hashIndex === -1 ? uriString : uriString.slice(0, hashIndex);
+    const queryIndex = withoutFragment.indexOf('?');
+    if (queryIndex === -1) {
+        return withoutFragment;
+    }
+    return withoutFragment.slice(0, queryIndex);
 }
 function recognizeUrl(uriString) {
     let result = {

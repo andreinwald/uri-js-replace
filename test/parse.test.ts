@@ -30,6 +30,7 @@ test("URI Parsing", function () {
         '.',
         './g',
         '../',
+        '/../g',
         '',
     ];
 

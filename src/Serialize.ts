@@ -48,7 +48,9 @@ export function serialize(components: URIComponents): string {
     }
     if (buildResult.temporarySchemeAndHostUsed) {
         result = result.replace(temporarySchemeAndHost, '');
-        if (result.startsWith('/')) {
+        // URL forces a leading "/" onto a path with no scheme or host.
+        // Keep it when the path was already absolute.
+        if (result.startsWith('/') && !(components.path && components.path.startsWith('/'))) {
             result = result.slice(1);
         }
     }

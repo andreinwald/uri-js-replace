@@ -52,7 +52,7 @@ function serialize(components) {
     }
     if (buildResult.temporarySchemeAndHostUsed) {
         result = result.replace(temporarySchemeAndHost, '');
-        if (result.startsWith('/')) {
+        if (result.startsWith('/') && !(components.path && components.path.startsWith('/'))) {
             result = result.slice(1);
         }
     }
