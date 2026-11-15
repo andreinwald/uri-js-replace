@@ -36,7 +36,10 @@ function equal(uriA, uriB) {
     else {
         processedB = (0, Serialize_1.serialize)(uriB);
     }
-    return processedA.toLowerCase() === processedB.toLowerCase();
+    return percentEncodingCase(processedA) === percentEncodingCase(processedB);
+}
+function percentEncodingCase(uri) {
+    return uri.replace(/%[0-9A-Fa-f]{2}/g, (match) => match.toUpperCase());
 }
 function normalize(uri) {
     if (typeof uri === "string") {
